@@ -1,0 +1,14 @@
+---
+title: "Grade_analysislab"
+format: html
+editor: visual
+---
+
+```{r}
+here::i_am("dplyr-102.Rproj")
+library(here)
+library(vroom) # or readr
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
