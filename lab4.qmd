@@ -61,8 +61,18 @@ Compute the number of students in each Group and include the results in your doc
 ```{r}
 bygroup <- grades %>%
   group_by(Group) %>%
-  summarise(N=n()) %>%
+  summarise(N=n())%>%
+  arrange(desc(N)) 
+bygroup %>%
   knitr::kable()
-bygroup
+```
+###6 
+Represent the same information as in the previous question in a graphical way.
+```{r}
+ggplot(bygroup, aes(x = Group, y = N))+ 
+  geom_col() +
+  xlab("Group Name")+
+  ylab("Count")+
+  ggtitle("Number of student per group")
 ```
 
