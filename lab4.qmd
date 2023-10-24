@@ -66,7 +66,7 @@ bygroup <- grades %>%
 bygroup %>%
   knitr::kable()
 ```
-###6 
+### Question 6 
 Represent the same information as in the previous question in a graphical way.
 ```{r}
 ggplot(bygroup, aes(x = Group, y = N))+ 
@@ -74,5 +74,12 @@ ggplot(bygroup, aes(x = Group, y = N))+
   xlab("Group Name")+
   ylab("Count")+
   ggtitle("Number of student per group")
+```
+### Question 7
+
+Represent graphically the distribution of the grades at the Exam conditioned by the group.
+Test at least two different representations.
+```{r}
+
 ```
 
