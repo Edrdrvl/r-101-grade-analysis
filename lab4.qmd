@@ -1,6 +1,7 @@
 ---
 title: "Grade_analysislab"
 format: html
+echo: false
 editor: visual
 ---
 
@@ -34,4 +35,34 @@ MMMG
 nnex <- sum(is.na(grades$Exam))
 ```
 
-On the day of the exam, `r nnex` did not partecipated to the exam
+On the day of the exam, `r nnex` people did not partecipate to the exam
+
+### Question 4
+Represent graphically in an adapted way the distribution of grades at the Exam. Make sure to adapt the code to avoid any error or warning from ggplot2.
+
+```{r}
+nograde <-grades %>% 
+   filter(is.na(Exam)) %>%
+   summarise(N=n())
+```
+
+```{r}
+nograde <- grades %>% 
+  drop_na(Exam)
+  
+ggplot(nograde, aes(x = Exam))+ 
+  geom_bar() +
+  xlab("Distribution of the exam grade")+
+  ylab("Count")+
+  ggtitle("Distribution of grades")
+```
+### Question 5 
+Compute the number of students in each Group and include the results in your document as a table.
+```{r}
+bygroup <- grades %>%
+  group_by(Group) %>%
+  summarise(N=n()) %>%
+  knitr::kable()
+bygroup
+```
+
