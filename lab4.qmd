@@ -29,4 +29,9 @@ MMMG <- grades %>%
   knitr::kable()
 MMMG
 ```
+### Question 3 
+```{r}
+nnex <- sum(is.na(grades$Exam))
+```
 
+On the day of the exam, `r nnex` did not partecipated to the exam
