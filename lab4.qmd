@@ -128,13 +128,25 @@ table_NAS
 ### Question 9
 Graphical representation of question 8
 ```{r}
-ggplot(, aes(x = Group, y = Absent)) +
-  geom_col(fill = "black") +
-  ylab("Number of absent students") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+ggplot(nograde2, aes(x = Group, y = not_attending)) +
+  geom_col(fill = "green") +
+  xlab("Grups")+
+  ylab("# of absent students")+
+ ggtitle("Number of Absent Students by Group")
 
 ```
-
-
+### Question 10
+Create a new data frame built from the grades data set reshaped to a long format. The new data frame should keep the Id and the Group as the original variables. The first lines of the data frame should have the following form (the actual values may be different)
 ```{r}
+GL <- grades %>%
+  select(starts_with("MCQ"), starts_with("Online"), Exam, Id, Group) %>%
+  pivot_longer(cols = starts_with("MCQ") | starts_with("Online") | Exam, names_to = "Examination", values_to = "Grade")
 ```
+### Question 11
+Using the long format, compute the number of missing grades in total for each student.
+```{r}
+MGS <- GL %>%
+  group_by(Id) %>%
+  summarise(Missing_Grades = sum(is.na(Grade)))
+```
+
