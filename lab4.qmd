@@ -142,11 +142,23 @@ GL <- grades %>%
   select(starts_with("MCQ"), starts_with("Online"), Exam, Id, Group) %>%
   pivot_longer(cols = starts_with("MCQ") | starts_with("Online") | Exam, names_to = "Examination", values_to = "Grade")
 ```
+
 ### Question 11
 Using the long format, compute the number of missing grades in total for each student.
 ```{r}
 MGS <- GL %>%
   group_by(Id) %>%
   summarise(Missing_Grades = sum(is.na(Grade)))
+MGS
+```
+### Question 12
+Represent graphically the distribution of the number of missing grades per student.
+
+```{r}
+ggplot(MGS, aes(x = Missing_Grades)) +
+  ylab("# of students") +
+  xlab("# of missing grades") +
+  ggtitle("Distribution of missing grades per student")
+  geom_bar(color = "red", fill = "darkred")
 ```
 
