@@ -6,6 +6,7 @@ editor: visual
 ---
 
 ```{r}
+#| message: false
 here::i_am("r-101-grade-analysis.Rproj")
 library(here)
 library(vroom) # or readr
@@ -15,12 +16,18 @@ library(ggplot2)
 ```
 
 ## Exercise 1
+
 ### Question 1
+
 ```{r}
+#| message: false
 grades <- vroom(here("/Users/edoardoruvolo/Desktop/Data Management/r-101-grade-analysis/grades.csv"))
 ```
 
 ### Question 2
+
+Compute the minimum, maximum, median and mean grade at the Exam and include the results as a table in the rendered document (using, e.g. knitr::kable).
+
 ```{r}
 MMMG <- grades %>%
   summarise('Min'=min(Exam, na.rm=TRUE), 
@@ -30,7 +37,11 @@ MMMG <- grades %>%
   knitr::kable()
 MMMG
 ```
-### Question 3 
+
+### Question 3
+
+Counts the number of students who did not take the final exam (i.e. for whom Exam is NA) and include the results in a sentence in your rendered document.
+
 ```{r}
 nnex <- sum(is.na(grades$Exam))
 ```
@@ -38,6 +49,7 @@ nnex <- sum(is.na(grades$Exam))
 On the day of the exam, `r nnex` people did not partecipate to the exam
 
 ### Question 4
+
 Represent graphically in an adapted way the distribution of grades at the Exam. Make sure to adapt the code to avoid any error or warning from ggplot2.
 
 ```{r}
@@ -56,8 +68,11 @@ ggplot(nograde, aes(x = Exam))+
   ylab("Count")+
   ggtitle("Distribution of grades")
 ```
-### Question 5 
+
+### Question 5
+
 Compute the number of students in each Group and include the results in your document as a table.
+
 ```{r}
 bygroup <- grades %>%
   group_by(Group) %>%
@@ -66,8 +81,11 @@ bygroup <- grades %>%
 bygroup %>%
   knitr::kable()
 ```
-### Question 6 
+
+### Question 6
+
 Represent the same information as in the previous question in a graphical way.
+
 ```{r}
 ggplot(bygroup, aes(x = Group, y = N))+ 
   geom_col() +
@@ -75,11 +93,48 @@ ggplot(bygroup, aes(x = Group, y = N))+
   ylab("Count")+
   ggtitle("Number of student per group")
 ```
+
 ### Question 7
 
-Represent graphically the distribution of the grades at the Exam conditioned by the group.
-Test at least two different representations.
+Represent graphically the distribution of the grades at the Exam conditioned by the group. Test at least two different representations.
+
 ```{r}
+gradesbygroup <- grades %>%
+  filter(!is.na(Exam))
+ggplot(gradesbygroup, aes(x = Exam, fill=Group)) + geom_bar(position="fill") +
+  ylab("Number of students in percentage")+
+  xlab("Exam Score")+
+ ggtitle("Distribution of Exam Scores by Group")
+```
+### Question 7.1 
+```{r}
+ggplot(gradesbygroup, aes(x = Exam)) +
+  geom_bar() +
+  facet_wrap(~Group) +
+  ylab("count")+
+  xlab("Exam grade")
+```
+
+### Question 8 
+Compute the number of students who missed the Exam in each Group (i.e. students whose Exam is NA).
+```{r}
+# da aggiustare
+nograde2 <- grades %>%
+group_by(Group) %>%
+summarise(not_attending = sum(is.na(Exam)))
+table_NAS <- knitr::kable(nograde2, caption = "# of students not attending the exam")
+table_NAS
+```
+### Question 9
+Graphical representation of question 8
+```{r}
+ggplot(, aes(x = Group, y = Absent)) +
+  geom_col(fill = "black") +
+  ylab("Number of absent students") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 
 ```
 
+
+```{r}
+```
