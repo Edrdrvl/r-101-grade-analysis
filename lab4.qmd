@@ -1,5 +1,6 @@
 ---
-title: "Grade_analysislab"
+title: "Grade analysis lab"
+author: "Edoardo Ruvolo"
 format: html
 echo: false
 editor: visual
@@ -18,7 +19,11 @@ library(stringr)
 
 ## Exercise 1
 
+Github link 
+
 ### Question 1
+
+For this first question we were asked to load the data set using a local file name (using here).
 
 ```{r}
 #| message: false
@@ -27,7 +32,7 @@ grades <- vroom(here("/Users/edoardoruvolo/Desktop/Data Management/r-101-grade-a
 
 ### Question 2
 
-Compute the minimum, maximum, median and mean grade at the Exam and include the results as a table in the rendered document (using, e.g. knitr::kable).
+For the second question, we computed the minimum, maximum, median and mean grade at the Exam and included the results as a table in the rendered document.
 
 ```{r}
 MMMG <- grades %>%
@@ -35,36 +40,29 @@ MMMG <- grades %>%
             'Max'=max(Exam, na.rm=TRUE), 
             'Mean'=mean(Exam, na.rm=TRUE), 
             'Median'=median(Exam, na.rm=TRUE))%>%
-  knitr::kable()
+ knitr::kable()
 MMMG
 ```
 
 ### Question 3
 
-Counts the number of students who did not take the final exam (i.e. for whom Exam is NA) and include the results in a sentence in your rendered document.
+In this third question, we were asked to count the number of students who did not take the final exam (i.e. for whom Exam is NA) and include the results in a sentence in your rendered document.
 
 ```{r}
-nnex <- sum(is.na(grades$Exam))
+NNEX <- sum(is.na(grades$Exam))
 ```
 
-On the day of the exam, `r nnex` people did not partecipate to the exam
+On the day of the exam, `r NNEX` people did not participate to the exam
 
 ### Question 4
 
-Represent graphically in an adapted way the distribution of grades at the Exam. Make sure to adapt the code to avoid any error or warning from ggplot2.
+In question 4 we represented graphically in an adapted way the distribution of grades at the Exam.
 
 ```{r}
-nograde <-grades %>% 
-   filter(is.na(Exam)) %>%
-   summarise(N=n())
-```
-
-```{r}
-nograde <- grades %>% 
+NG <- grades %>% 
   drop_na(Exam)
-  
-ggplot(nograde, aes(x = Exam))+ 
-  geom_bar() +
+ggplot(NG, aes(x = Exam))+ 
+  geom_bar(fill = "skyblue", color = "black") +
   xlab("Distribution of the exam grade")+
   ylab("Count")+
   ggtitle("Distribution of grades")
@@ -72,72 +70,87 @@ ggplot(nograde, aes(x = Exam))+
 
 ### Question 5
 
-Compute the number of students in each Group and include the results in your document as a table.
+In question 5, we were asked to compute the number of students in each Group and include the results in your document as a table.
 
 ```{r}
-bygroup <- grades %>%
+BG <- grades %>%
   group_by(Group) %>%
   summarise(N=n())%>%
   arrange(desc(N)) 
-bygroup %>%
+BG %>%
   knitr::kable()
 ```
 
 ### Question 6
 
-Represent the same information as in the previous question in a graphical way.
+In question 6, we represented the number of student in each group in a graphical way.
 
 ```{r}
-ggplot(bygroup, aes(x = Group, y = N))+ 
-  geom_col() +
+ggplot(BG, aes(x = Group, y = N))+ 
+  geom_col(fill = "skyblue", color = "black", size = 0.5) +
   xlab("Group Name")+
-  ylab("Count")+
-  ggtitle("Number of student per group")
+  ylab("Count of students")+
+  ggtitle("Number of student per group")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ### Question 7
 
-Represent graphically the distribution of the grades at the Exam conditioned by the group. Test at least two different representations.
+In question 7 we were asked to represent graphically the distribution of the grades at the Exam, by conditioning it a the group. We needed to propose two different graphical representation.
+
+In the question 7, a bar graph is proposed, which in one solution is able to describe the distribution of the grade of the exam. In question 7.1 a facet wrap solution is proposed, showing the distribution of each group in a separated graph.
 
 ```{r}
-gradesbygroup <- grades %>%
+GBG<- grades %>%
   filter(!is.na(Exam))
-ggplot(gradesbygroup, aes(x = Exam, fill=Group)) + geom_bar(position="fill") +
+ggplot(GBG, aes(x = Exam, fill=Group)) + 
+  geom_bar(position="fill") +
   ylab("Number of students in percentage")+
   xlab("Exam Score")+
  ggtitle("Distribution of Exam Scores by Group")
 ```
-### Question 7.1 
+
+### Question 7.1
+
 ```{r}
-ggplot(gradesbygroup, aes(x = Exam)) +
-  geom_bar() +
-  facet_wrap(~Group) +
+ggplot(GBG, aes(x = Exam)) +
+geom_bar(fill = "skyblue", color = "black", size = 0.5) +
+  facet_wrap(~Group, scales = "free_y") +
   ylab("count")+
-  xlab("Exam grade")
+  xlab("Exam grade")+
+  ggtitle("Distribution of Exam Scores by Group")
 ```
 
-### Question 8 
-Compute the number of students who missed the Exam in each Group (i.e. students whose Exam is NA).
+### Question 8
+
+In question 8, we were asked to find the number of students who missed the exam in each group. A table with the first 4 values is presented just as a small sample.
+
 ```{r}
-# da aggiustare
-nograde2 <- grades %>%
+NG2 <- grades %>%
 group_by(Group) %>%
 summarise(not_attending = sum(is.na(Exam)))
-table_NAS <- knitr::kable(nograde2, caption = "# of students not attending the exam")
-table_NAS
+table_NG2 <- knitr::kable(head(NG2, n= 4), caption = "Students not attending the exam in each group")
+table_NG2
 ```
+
 ### Question 9
-Graphical representation of question 8
+
+In question 9 we were asked to graphically represent the the number of students who missed the exam in each group. 
 ```{r}
-ggplot(nograde2, aes(x = Group, y = not_attending)) +
-  geom_col(fill = "green") +
-  xlab("Grups")+
-  ylab("# of absent students")+
- ggtitle("Number of Absent Students by Group")
+ggplot(NG2, aes(x = Group, y = not_attending)) +
+  geom_col(fill = "green", col = "darkgreen") +
+  xlab("Groups")+
+  ylab("Count of absent students")+
+ ggtitle("Number of Absent Students by Group")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
 ### Question 10
-Create a new data frame built from the grades data set reshaped to a long format. The new data frame should keep the Id and the Group as the original variables. The first lines of the data frame should have the following form (the actual values may be different)
+
+In question 10 we created a new data frame, reshaping the original data set to a long format. 
+The new data frame should keep the Id and the Group as the original variables.
+
 ```{r}
 GL <- grades %>%
   select(starts_with("MCQ"), starts_with("Online"), Exam, Id, Group) %>%
@@ -145,17 +158,20 @@ GL <- grades %>%
 ```
 
 ### Question 11
-Using the long format, compute the number of missing grades in total for each student.
+
+In question 11, using the long format, we computed the number of missing grades in total for each student. A table with the first 4 values is presented just as a small sample.
+
 ```{r}
 MGS <- GL %>%
   group_by(Id) %>%
   summarise(Missing_Grades = sum(is.na(Grade)))
-table_MGS <- knitr::kable(MGS, caption = "# missing grade per student")
+table_MGS <- knitr::kable(head(MGS, n = 4), caption = "Count of missing grade per student")
 table_MGS
 ```
-### Question 12
-Represent graphically the distribution of the number of missing grades per student.
 
+### Question 12
+
+In question 12, we presented graphically the distribution of the number of missing grades per student.
 ```{r}
 ggplot(MGS, aes(x = Missing_Grades)) +
   ylab("# of students") +
@@ -163,39 +179,42 @@ ggplot(MGS, aes(x = Missing_Grades)) +
   ggtitle("Distribution of missing grades per student")+
   geom_histogram(color = "red", fill = "darkred", bins = 30)
 ```
+
 ### Question 13
 
-Using the long format, compute the same information as in question 8.
-```{r, Missing Grade per Group}
-NES3 <- GL %>%
+In question 13 , using the long format, we found the number of students who missed the exam in each group
+A table with the first 4 values is presented just as a small sample.
+```{r}
+NG3 <- GL %>%
   group_by(Id) %>%
   summarise(Absent = sum(is.na(Grade)))
-table_NAS3 <- knitr::kable(NES3, caption = "# of student")
-table_NAS
+table_NG3 <- knitr::kable(head (NG3, n=4) , caption = "Count of student")
+table_NG3
 ```
 
 ### Question 14
 
-Using the long format, compute the number of missing grades for the online tests for each student.
+In question 14, using the long format, we were asked to compute the number of missing grades for the online tests for each student. 
+A table with the first 4 values is presented just as a small sample.
 ```{r}
 MGO <- GL %>%
   filter(str_starts(Examination, "Online_MCQ")) %>%
   group_by(Id) %>%
   summarise(Missing_grade_online = sum(is.na(Grade)))
-MGO
+  table_MGO <- knitr::kable(head (MGO, n=4), caption = "Missing grade online per each student (ID)")
+table_MGO
 ```
 
 ### Question 15
 
-Represent graphically the distribution of the grades at the Exam conditioned by the number of missing grades for the online tests.
-
+In question 15 we were asked to epresent graphically the distribution of the grades at the Exam conditioned by the number of missing grades for the online tests.
 ```{r}
-Merged_df1 <- grades %>%
+Merged_DF1 <- grades %>%
    left_join(MGO, by = "Id")
 
-data1 = filter(Merged_df1, !is.na(Exam))
+DT1 = filter(Merged_DF1, !is.na(Exam))
 
-ggplot(data1, aes(x = as.factor(Missing_grade_online), y = Exam)) +
+ggplot(DT1, aes(x = as.factor(Missing_grade_online), y = Exam)) +
   geom_boxplot() +
   xlab("Total of missing grades for the online tests") +
   ylab("Grade at the exam") +
@@ -203,21 +222,21 @@ ggplot(data1, aes(x = as.factor(Missing_grade_online), y = Exam)) +
 ```
 
 ### Question 16
-Create a table with two columns: Id to identify students and Missed with value TRUE when the student miss at least one MCQ_xx grade and FALSE when they miss no grade.
 
+In question 16 we created a table with two columns: Id to identify students and Missed with value TRUE when the student miss at least one MCQ_xx grade and FALSE when they miss no grade. A table with the first 10 values is presented just as a sample but in general the observation would be 729 (the Id of each student). 
 ```{r}
 MMCQ <- grades %>%
   rowwise() %>%
   mutate(Missed = any(is.na(c_across(starts_with("MCQ"))))) %>%
   select(Id, Missed)
 MMCQ <- MMCQ[order(MMCQ$Id, decreasing = FALSE),]
-table4 <- knitr::kable(MMCQ, caption = "At least one MCQ missed, per student")
-table4
+table_MMCQ <- knitr::kable(head (MMCQ, n=10), caption = "At least one MCQ missed, per student")
+table_MMCQ
 ```
 
 ### Question 17
-Create a table with two columns: Group to identify groups and P_missed with the percentage of students in each group who missed at least one MCQ_xx grade.
 
+In question 17 we were asked to create a table with two columns: Group to identify groups and P_missed with the percentage of students in each group who missed at least one MCQ_xx grade. A table with the first 10 values is presented just as a sample but in general the observation would be 24 (each group). 
 ```{r}
 PMMCQ <- grades %>%
   rowwise() %>%
@@ -231,13 +250,26 @@ PMMCQ <- grades %>%
   ) %>%
    mutate(P_missed = scales::percent(P_missed, scale = 1)) %>%
   select(Group, P_missed)
-table5 <- knitr::kable(PMMCQ, caption = "Percentage of students in each group who missed at least one MCQ")
-table5
+table_PMMCQ <- knitr::kable(head(PMMCQ, n=10), caption = "Percentage of students in each group who missed at least one MCQ")
+table_PMMCQ
 ```
 
 ### Question 18
+Lastly, in question 18, we were demanded to represent graphically the average grade at the Exam per group as a function of the percentage of missed MCQ_xx grade as defined in the previous question.
+```{r}
+AGG <- grades %>%
+  group_by(Group) %>%
+  summarise(Total_student_per_group = n(),
+            Grade_of_Group = sum(Exam, na.rm = TRUE),
+            Average_grade = Grade_of_Group /Total_student_per_group) %>%
+  select(Group, Average_grade)
 
+JT <- inner_join(AGG, PMMCQ)
 
-
-
-
+ggplot(JT, aes(x = P_missed, y = Average_grade, color = Group)) +
+  geom_point() +
+  xlab("Percentage of missed MCQ grade") +
+  ylab("Average grade at the exam, per group") +
+  ggtitle("Average grade at the exam, per group, as a function of the percentage of missed MCQ") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
