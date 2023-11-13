@@ -149,7 +149,8 @@ Using the long format, compute the number of missing grades in total for each st
 MGS <- GL %>%
   group_by(Id) %>%
   summarise(Missing_Grades = sum(is.na(Grade)))
-MGS
+table_MGS <- knitr::kable(MGS, caption = "# missing grade per student")
+table_MGS
 ```
 ### Question 12
 Represent graphically the distribution of the number of missing grades per student.
@@ -158,7 +159,24 @@ Represent graphically the distribution of the number of missing grades per stude
 ggplot(MGS, aes(x = Missing_Grades)) +
   ylab("# of students") +
   xlab("# of missing grades") +
-  ggtitle("Distribution of missing grades per student")
-  geom_bar(color = "red", fill = "darkred")
+  ggtitle("Distribution of missing grades per student")+
+  geom_histogram(color = "red", fill = "darkred", bins = 30)
+```
+### Question 13
+
+Using the long format, compute the same information as in question 8.
+```{r, Missing Grade per Group}
+NES3 <- GL %>%
+  group_by(Id) %>%
+  summarise(Absent = sum(is.na(Grade)))
+table_NAS3 <- knitr::kable(NES3, caption = "# of student")
+table_NAS
+```
+
+### Question 14
+
+Using the long format, compute the number of missing grades for the online tests for each student.
+```{r}
+MGO <- GL %
 ```
 
