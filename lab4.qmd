@@ -218,6 +218,25 @@ table4
 ### Question 17
 Create a table with two columns: Group to identify groups and P_missed with the percentage of students in each group who missed at least one MCQ_xx grade.
 
+```{r}
+PMMCQ <- grades %>%
+  rowwise() %>%
+  mutate(Missed = any(is.na(c_across(starts_with("MCQ"))))) %>%
+  ungroup() %>%
+  group_by(Group) %>%
+  summarise(
+    Total_student_per_group = n(),
+    Students_missing_one = sum(Missed, na.rm = TRUE),
+    P_missed = (Students_missing_one / Total_student_per_group ) * 100
+  ) %>%
+   mutate(P_missed = scales::percent(P_missed, scale = 1)) %>%
+  select(Group, P_missed)
+table5 <- knitr::kable(PMMCQ, caption = "Percentage of students in each group who missed at least one MCQ")
+table5
+```
+
+### Question 18
+
 
 
 
